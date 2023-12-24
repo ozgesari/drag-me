@@ -1,23 +1,59 @@
-import logo from './logo.svg';
+
+import { useState } from 'react';
 import './App.css';
+import Background from './components/Background';
+import Box from './components/Box';
+import { useImmer } from 'use-immer';
+
+
 
 function App() {
+  const initialPosition = {
+    x: 0,
+    y: 0
+  };
+  const [shape, setShape] = useImmer({
+    color: 'orange',
+    position: initialPosition
+  });
+
+  function handleMove(dx, dy) {
+    setShape(draft => {
+      draft.position.x += dx;
+      draft.position.y += dy;
+    });
+  }
+
+  function handleColorChange(e) {
+    setShape(draft => {
+      draft.color = e.target.value
+    })
+  }
+
+
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
+      <>
+        <select
+          value={shape.color}
+          onChange={handleColorChange}
         >
-          Learn React
-        </a>
-      </header>
+          <option value="orange">orange</option>
+          <option value="lightpink">lightpink</option>
+          <option value="aliceblue">aliceblue</option>
+        </select>
+        <Background
+          position={initialPosition}
+        />
+        <Box
+          color={shape.color}
+          position={shape.position}
+          onMove={handleMove}
+        >
+          Drag me!
+        </Box>
+      </>
     </div>
   );
 }
